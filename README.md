@@ -62,6 +62,18 @@ GPX track, I throw out each point that is not at least 10 meters from the previo
 </p>
 <p>Going off my priors it looks like 15 meters is the best number to use here. But does this hold in general?</p>
 
-## Short regression analysis
+## Short threshold analysis
 
+<p>
+  I downloaded seven GPX tracks off of strava where I could reasonably estimate truth values for mileage and elevation, and used those to isolate a single minimum distance threshold that minimizes distance error. All of this logic, which involves the resampling analysis above, is contained in calibrate_gpx_threshold.py, and the sample gpx tracks I used are in the input_gpx folder. A figure summarizing the results is below:
+</p>
+<p>
+  <img width="2000" height="1200" alt="image" src="https://github.com/user-attachments/assets/e807c372-3566-427e-8537-fdf259908b12" />
+</p>
+<p>
+  For each minimum distance threshold from 0 to 30 meters, the average absolute distance error, average directional distance error, and the average absolute elevation error are plotted. In this analysis I prioritized the absolute distance error, which is minimized when using a 16m minimum distance threshold -- quite close to the 15m that suited the cathedral traverse track! Specific error values for each gpx track at a 16m threshold are shown below:
+</p>
+<p>
+  <img width="2200" height="1200" alt="image" src="https://github.com/user-attachments/assets/6e7124d0-0ad9-4010-a4b8-d6400f66441f" />
+</p>
 
