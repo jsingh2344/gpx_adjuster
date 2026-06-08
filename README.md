@@ -60,12 +60,12 @@ GPX track, I throw out each point that is not at least 10 meters from the previo
 <p>
   <img width="2000" height="1200" alt="image" src="https://github.com/user-attachments/assets/5d1f97b8-e504-493a-9ecd-418dceb5cf9c" />
 </p>
-<p>Going off my priors it looks like 15 meters is the best number to use here. But does this hold in general?</p>
+<p>Going off my priors, it looks like 15 meters is the best number to use here. But does this hold in general?</p>
 
 ## Short threshold analysis
 
 <p>
-  I downloaded seven GPX tracks off of strava where I could reasonably estimate truth values for mileage and elevation, and used those to isolate a single minimum distance threshold that minimizes distance error. All of this logic, which involves the resampling analysis above, is contained in calibrate_gpx_threshold.py, and the sample gpx tracks I used are in the input_gpx folder. A figure summarizing the results is below:
+  I downloaded seven GPX tracks off of strava where I could reasonably estimate truth values for mileage and elevation, and used those to isolate a single minimum distance threshold that minimizes the mean absolute distance error across all seven. All of this logic, which involves the resampling analysis above, is contained in calibrate_gpx_threshold.py, and the sample gpx tracks I used are in the input_gpx folder. A figure summarizing the results is below:
 </p>
 <p>
   <img width="2000" height="1200" alt="image" src="https://github.com/user-attachments/assets/e807c372-3566-427e-8537-fdf259908b12" />
