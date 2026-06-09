@@ -77,3 +77,154 @@ GPX track, I throw out each point that is not at least 10 meters from the previo
   <img width="2200" height="1200" alt="image" src="https://github.com/user-attachments/assets/6e7124d0-0ad9-4010-a4b8-d6400f66441f" />
 </p>
 
+## Notes on usage
+
+### calibrate_gpx_threshold.py
+
+<p>
+  To run this script, you need paths to a folder of gpx files and to a csv file that contains 'truth' distance and elevation values. This cvs file should take on the following example structure: 
+
+The calibration CSV should use this format:
+
+<table>
+  <thead>
+    <tr>
+      <th>File</th>
+      <th>Mi</th>
+      <th>Elev</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>cathy.gpx</td>
+      <td>16</td>
+      <td>11000</td>
+    </tr>
+    <tr>
+      <td>loop.gpx</td>
+      <td>28</td>
+      <td>11000</td>
+    </tr>
+    <tr></tr>
+      <td>moran.gpx</td>
+      <td>20</td>
+      <td>6000</td>
+    </tr>
+  </tbody>
+</table>
+
+</p>
+<p>
+  Then, to run the calibration, use this command: 
+  <pre><code> python3 calibrate_gpx_threshold.py [csv_path] --gpx-dir [gpx_folder] </code></pre>
+</p>
+<p>
+  To control the thresholds being tested, use the following: 
+  <pre><code> python3 calibrate_gpx_threshold.py [csv_path] --gpx-dir [gpx_folder] --start 0 --stop 30 --step 0.5 </code></pre>
+  This would conduct a threshold search starting at 0 meters, testing up to 30 meters, and going by 0.5 meter increments in between.
+  Diagnostic results are written to: threshold_calibration_per_track_results.csv,
+threshold_calibration_summary.csv,
+threshold_calibration_summary.png, and
+threshold_calibration_best_threshold_track_errors.png.
+</p>
+
+### gpx_adjuster.py
+
+<p> This file deals with a single gpx track and, depending on provided values, outputs a modified track along with new distance/elevation figures
+</p>
+
+<p>
+
+#### Basic usage
+
+<pre><code> 
+  python3 gpx_adjuster.py input.gpx --min-move 10 
+</code></pre>
+
+This prints the raw and adjusted distance/elevation gain, then saves a cleaned GPX file containing only the retained gpx track, using a 
+minimum 10 meter distance between points.
+
+Example output:
+
+<table>
+  <thead>
+    <tr>
+      <th>Metric</th>
+      <th>Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Raw distance</td>
+      <td>42.22 mi</td>
+    </tr>
+    <tr>
+      <td>Adjusted distance</td>
+      <td>18.09 mi</td>
+    </tr>
+    <tr>
+      <td>Distance difference</td>
+      <td>24.13 mi</td>
+    </tr>
+    <tr>
+      <td>Raw elevation gain</td>
+      <td>92,589 ft</td>
+    </tr>
+    <tr>
+      <td>Adjusted elevation gain</td>
+      <td>23,506 ft</td>
+    </tr>
+    <tr>
+      <td>Elevation gain difference</td>
+      <td>69,083 ft</td>
+    </tr>
+    <tr>
+      <td>Min move threshold</td>
+      <td>10 m</td>
+    </tr>
+    <tr>
+      <td>Kept points</td>
+      <td>2,662 / 76,757</td>
+    </tr>
+    <tr>
+      <td>Saved adjusted GPX</td>
+      <td><code>input_adjusted_10m.gpx</code></td>
+    </tr>
+  </tbody>
+</table>
+
+#### Choose an output GPX filename
+
+<pre><code>
+  python3 gpx_adjuster.py input.gpx --min-move 10 --output-gpx cleaned_10m.gpx 
+</code></pre>
+
+#### Run diagnostics (similar to calibration file)
+
+<pre><code> python3 gpx_adjuster.py input.gpx --diagnostic </code></pre>
+
+Diagnostic mode tests thresholds from 0 m to 30 m in 2 m increments. It prints a table of adjusted distance, elevation gain, and kept-point counts at each threshold.
+
+It also saves: input_diagnostic.png, input_kept_points_table.png 
+
+#### Custom diagnostic thresholds
+
+<pre><code> python3 gpx_adjuster.py input.gpx --diagnostic --thresholds 0,3,5,8,10,15,20 </code></pre>
+
+#### Custom plot/table output paths
+
+<pre><code> python3 gpx_adjuster.py input.gpx --diagnostic \   --plot-path diagnostic_plot.png \   --table-path kept_points_table.png 
+</code></pre>
+
+#### Optional speed filter
+
+<pre><code> python3 gpx_adjuster.py input.gpx --min-move 10 --max-speed 20 </code></pre>
+
+--max-speed rejects segments faster than the given speed in meters per second. This can remove large GPS jumps, though most alpine GPX overestimation is often caused by small repeated jitter rather than obvious high-speed spikes.
+
+#### Notes
+
+The --min-move value is in meters. A larger value removes more GPS noise but also simplifies the track more aggressively. For noisy mountain tracks, values around 8–20 m may be useful, but the best threshold depends on the device, terrain, and route.
+
+The adjusted GPX distance should be treated as an estimate, not an exact measurement.
+</p>
